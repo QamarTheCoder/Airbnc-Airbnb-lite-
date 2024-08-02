@@ -1,0 +1,103 @@
+<% layout('layout/boilerplate') -%>
+<body>
+    <div class="row mt-5">
+        <div class="col-8 offset-3">
+
+    <h2><%= data.title %></h2>
+    <br>
+</div>
+
+    <div class="card col-6 offset-3 show-card listing-card">
+        <img src="<%= data.image[0]["url"]%>" class="card-img-top show-img" alt="...">
+        <div class="card-body">
+          <p class="card-text">Owned By <%= data.owner.username %></p>
+          <p class="card-text"><%= data.description %></p>
+          <p class="card-text"> &#8377; <%= data.price.toLocaleString("en-IN")%></p>
+          <p class="card-text"><%= data.location%></p>
+          <p class="card-text"><%= data.country%></p>   
+        </div>
+      </div>
+
+      <% if (currUser && currUser._id.equals(data.owner._id)) { %>
+      <div class="btns col-6 offset-3">
+         
+        
+        <form method="get" action="/listings/<%= data._id %>/edit">
+            <button class="btn btn-dark cb col-20 offset--30     ">Edit</button>
+        </form>
+        <form method="post" action="/listings/<%= data._id %>/?_method=Delete">
+            <button class="btn btn-dark  offset-2 ">Delete</button>
+        </form>
+      </div>
+      <% } %>
+
+      <div class="col-8 offset-3 mt-3">
+      <hr>
+        <% if (currUser) { %>
+        
+        <h4>Leave a Review</h4>
+        <form method="post" action="/listings/<%= data._id %>/reviews" novalidate class="needs-validation mb-3"  >
+
+                <!-- <input type="range" min="1" max="5" id="rating" name="rating" class="form-range"> -->
+
+            <div class="mb-3 mt-3">
+                <label for="rating" class="form-lable">Rating</label>
+            <fieldset class="starability-slot">
+                <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="1" checked aria-label="No rating." />
+                <input type="radio" id="first-rate1" name="rating" value="1" />
+                <label for="first-rate1" title="Terrible">1 star</label>
+                <input type="radio" id="first-rate2" name="rating" value="2" />
+                <label for="first-rate2" title="Not good">2 stars</label>
+                <input type="radio" id="first-rate3" name="rating" value="3" />
+                <label for="first-rate3" title="Average">3 stars</label>
+                <input type="radio" id="first-rate4" name="rating" value="4" />
+                <label for="first-rate4" title="Very good">4 stars</label>
+                <input type="radio" id="first-rate5" name="rating" value="5" />
+                <label for="first-rate5" title="Amazing">5 stars</label>
+              </fieldset>
+            </div>
+
+            <div class="mb-3 mt-3">
+                <label for="comment" class="form-lable">Comment</label>
+                <textarea rows="5" cols="30" id="comment" name="comment" class="form-control" placeholder="Leave a Comment!" required></textarea>
+                <div class="invalid-feedback">
+                    Please write a valid review!
+                </div>
+            </div>
+            <button class="btn btn-outline-dark">Submit</button>                                                                                             
+        </form>
+        <hr>
+
+        <% } %>
+
+
+         
+        
+        <p><b>Reviews</b></p>
+        
+        <div class="row">
+        <% for( review of data.reviews ) { %>
+            <div class="card col-5 ms-3 mb-3 ">
+                <div class="card-body">
+                    <h5 class="card-title mt-1">@<%= review.author.username %> </h5>
+                    <p class="starability-result" data-rating="<%= review.rating %>"></p>
+
+                    <p class="card-text"><%= review.content %></p>
+
+                </div>
+                <% if (currUser && currUser._id.equals(review.author._id)) { %>
+                 
+                <form class="mb-3" method="post" action="/listings/<%= data._id%>/reviews/<%= review._id %>?_method=Delete">
+                    <button class="btn btn-sm btn-dark mt-3">Delete</button>
+                </form>
+
+                <% } %>
+
+            </div>
+        <% } %>
+
+      </div>
+    </div>
+</div>
+    
+</body>
